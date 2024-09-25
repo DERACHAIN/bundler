@@ -1,39 +1,94 @@
-# Bundler
+# Account Abstraction (AA) service
 
-Biconomy ERC-4337 bundler-as-a-service implementation.
+All-in-one off-chain services for AA on DERA chain, included but not limited to Bundler, Paymaster service that comply with EIP-4337.
+This repository is based on [Biconomy open-source bundler service](https://github.com/bcnmy/bundler) that extends other modules such as Paymaster.
 
-## Workflow best practices
+## Prerequisites
 
-This project has two _important_ branches:
+- [NodeJS v20 LTS](https://nodejs.org/en/blog/release/v20.9.0).
+- [Docker v27](https://docs.docker.com/engine/release-notes/27/) with [docker-compose](https://docs.docker.com/compose/install/linux/) plugins installed.
 
-- `master`: Production branch. This is code that's currently in production.
-- `staging`: Staging branch. This represents what will be deployed to staging and included in the next release after it's been tested.
+## Setup
 
-To write quality commit messages we (try to) follow the [Conventional Commits Standard](https://www.conventionalcommits.org/en/v1.0.0/).
+- Install `yarn` and `ts-node`
+```sh
+$ npm install -g yarn
+$ npm install -g ts-node
+```
 
-## Local Development Environment
+- Install dependencies
+```sh
+$ yarn
+```
 
-There are 2 ways to run the service and it's dependencies locally:
+- Create `.env` file from template and populate necessary secrets and credentials
+```sh
+$ cp .env-example .env
+```
 
-1. **Manually**: follow the instructions in the [Bundler Local Setup](https://www.notion.so/biconomy/Local-setup-858695240f3a4c19b6c96cbb3f235b0a?pvs=4) Notion page.
-2. **Docker (recommended)**: follow the instructions below.
+- Create `./src/config.json` from `./src/config.template.json` and populate necessary secrets and credentials
+```sh
+$ cp ./src/config.template.json ./src/config.json
+```
 
-## Using the Docker development environment
-1. Install Docker, Docker compose and `ts-node` on your local machine
-2. Follow the [First setup instructions](src/config/CONFIG.md#👶🏻-first-setup-instructions) to configure the Bundler before running it.
-3. Run `docker compose up` and the server and all of it's dependencies should run in the current terminal session without throwing any errors.
+- Compile `config.json` after exporting the `BUNDLER_CONFIG_PASSPHRASE` environment variable with the same value that is predefined in the `.env` file from the previous step
+```sh
+$ export BUNDLER_CONFIG_PASSPHRASE="<same-value-within-dotenv-file>"
+$ cd src && npx ts-node encrypt-config.ts
+```
+you should note that `completed` text is printed out upon compilation.
 
-Other useful commands:
+## Run
 
-- `docker compose down`: stop the containers without deleting their data.
-- `docker compose down -v` tears down the whole environment, killing the containers and deleting any data volumes permanently. ⚠️ This will delete the local DB, do it only if you don't care about the data.
-- `docker compose up -d`: runs the containers in the background without blocking the current terminal sessions.
-- 💡 `docker compose build server`: run this whenever you add a new package to `package.json` or it won't be reflected in the container.
-- `docker compose build --no-cache <service_name>`: build without cache if you suspect caching problems.
+- Start server and run in foreground
+```sh
+$ docker-compose up
+```
+the server should be up and running at `localhost:3000` without errors.
 
+- Start server background
+```sh
+$ docker-compose up -d
+```
 
-### NOTES for DEVOPS
-When adding a new chain integration make sure to add the new charin id
-to all relevant config deployment files, in the `supportedNetworks`
-e.g. `config/staging.json` or the bunlder will not start that network
-even thouh is supported.
+## Dry test
+
+- Test Bundler endpoint
+```sh
+$ curl -X POST -H 'Content-Type: application/json' -d '{"jsonrpc":"2.0","id":1693369916,"method":"eth_supportedEntryPoints","params":[]}' http://localhost:3000/api/v2/20240801/x
+```
+the server should return successful response, such as:
+```json
+{"jsonrpc":"2.0","id":1693369916,"result":["0xd085d4bf2f695D68Ba79708C646926B01262D53f"]}
+```
+
+- Test Paymaster endpoint
+```sh
+$ curl -X POST -H 'Content-Type: application/json' -d '{"jsonrpc":"2.0","id":1693369916,"method":"eth_chainId","params":[]}' http://localhost:3000/paymaster/api/v1/20240801/x
+```
+the server should return successful response, such as:
+```json
+{"id":1693369916,"jsonrpc":"2.0","result":"0x134d9a1"}
+```
+
+## Integration test
+
+- Refer to [Demo AA client](https://github.com/DERACHAIN/Demo-AA-client) for details.
+
+## Clean
+
+- Stop server
+```sh
+$ docker-compose down -v
+```
+
+## Other useful commands
+
+- Build new docker image upon adding new package to `package.json`
+```sh
+$ docker-compose build server
+```
+or without cache in the case you suspect caching problems
+```sh
+$ docker-compose build --no-cache <service-name>
+```
