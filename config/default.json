@@ -1051,5 +1051,6 @@
     "maxRedirections": 16,
     "retryDelayOnFailover": 100,
     "scaleReads": "master"
-  }
+  },
+  "disableFeeValidation": []   
 }

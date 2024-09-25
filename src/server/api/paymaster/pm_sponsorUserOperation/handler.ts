@@ -1,6 +1,6 @@
 /* eslint-disable import/no-import-module-exports */
 import { Request, Response } from "express";
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 import { arrayify, hexConcat } from "ethers/lib/utils";
 
 import { STATUSES } from "../../shared/middleware";
@@ -47,10 +47,10 @@ export const sponsorUserOperation = async (req: Request, res: Response) => {
     const verifyingSingletonPaymaster = new ethers.Contract(contractAddress, PAYMASTER_ABI, provider);
 
     // adjust verification gas limit for sponsored transaction
-    const verificationGasLimit = BigNumber.from(500000);
+    const verificationGasLimit = 500000;
     
     const op2 = {...userOp };
-    op2.verificationGasLimit = verificationGasLimit.toBigInt();
+    op2.verificationGasLimit = BigInt(verificationGasLimit);
 
     log.warn(`op2: ${customJSONStringify(op2)}`);
 
@@ -58,6 +58,8 @@ export const sponsorUserOperation = async (req: Request, res: Response) => {
     log.info(`paymasterId ${config.paymasterConfig.paymasterId}`);
 
     const verifyingSigner = new ethers.Wallet(relayerManagerConfig.ownerPrivateKey, provider);
+    log.info(`verifyingSigner: ${await verifyingSigner.getAddress()}`);
+
     const hash = await verifyingSingletonPaymaster.getHash(
       op2,
       await verifyingSigner.getAddress(),
@@ -87,14 +89,14 @@ export const sponsorUserOperation = async (req: Request, res: Response) => {
     // returns sponsor result data
     const sponsorResult = {
       paymasterAndData,
-      verificationGasLimit: verificationGasLimit.toNumber(),
+      verificationGasLimit,
     };
 
     return res
       .status(STATUSES.SUCCESS)
       .json(new SponsorUserOperationResponse(sponsorResult, id));
   } catch (error) {
-    log.error(`Error in sponsorUserOperation: ${customJSONStringify(error)}`);
+    log.error(`Error in sponsorUserOperation: ${error}`);
     return res
       .status(STATUSES.INTERNAL_SERVER_ERROR)
       .json(new RPCErrorResponse(new InternalServerError(error), id));
