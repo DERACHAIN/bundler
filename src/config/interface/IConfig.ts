@@ -131,7 +131,10 @@ export type ConfigType = {
   morphNetworks: Array<number>;
   // array of chain Ids for networks that are part of the Esi ecosystem - they have different gas limits than other networks
   seiNetworks: Array<number>;
+  // array of chain Ids for networks that are part of the Kakarot ecosystem - they have a 7m gas limit
+  kakarotNetworks: Array<number>;
 
+  // paymaster configuration
   paymasterConfig: {
     verifyPaymasterAddress: string;
     paymasterId: string;
@@ -160,6 +163,16 @@ export type ConfigType = {
   // Transaction error messages
   transaction: TransactionConfigType;
   zeroAddress: `0x${string}`;
+  // hardcode override some gas values for a specific chain
+  gasOverrides: Record<
+    number,
+    {
+      baseFeePerGas: number;
+      preVerificationGas: number;
+    }
+  >;
+  // disable maxFeePerGas & maxPriorityFeePerGas validation for specific chain ids
+  disableFeeValidation: Array<number>;
 };
 
 export interface IConfig {
