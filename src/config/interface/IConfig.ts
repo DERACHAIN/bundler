@@ -133,6 +133,12 @@ export type ConfigType = {
   seiNetworks: Array<number>;
   // array of chain Ids for networks that are part of the Kakarot ecosystem - they have a 7m gas limit
   kakarotNetworks: Array<number>;
+
+  // paymaster configuration
+  paymasterConfig: {
+    verifyPaymasterAddress: string;
+    paymasterId: string;
+  };
   paymasterDashboardBackendConfig: PaymasterDashboardBackendConfigType;
   // array of chain Ids for networks that are part of the Polygon zkEVM ecosystem
   polygonZKEvmNetworks: Array<number>;

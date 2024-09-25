@@ -31,6 +31,7 @@
     "dotenv": "^16.0.3",
     "entry-point-gas-estimations": "0.0.26",
     "ethereumjs-util": "^7.1.5",
+    "ethers": "5.7.2",
     "express": "^4.18.2",
     "express-handlebars": "^6.0.6",
     "express-prometheus-middleware": "^1.2.0",

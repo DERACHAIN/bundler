@@ -38,6 +38,15 @@ export enum BiconomyMethodType {
   GET_USER_OPERATION_STATUS = "biconomy_getUserOperationStatus",
 }
 
+export enum PaymasterMethodType {
+  SPONSOR = "pm_sponsorUserOperation",
+}
+
+export enum PaymasterMode {
+  ERC20 = "ERC20",
+  SPONSORED = "SPONSORED",
+}
+
 export enum UserOperationStateEnum {
   BUNDLER_MEMPOOL = "BUNDLER_MEMPOOL",
   SUBMITTED = "SUBMITTED",
@@ -232,4 +241,11 @@ export type EVMRelayerMetaDataType = {
 
 export type StatusInfo = {
   [chainId: number]: { relayers: Array<EVMRelayerMetaDataType> };
+};
+
+export type PaymasterData = {
+  paymasterAndData: string;
+  preVerificationGas?: string;
+  verificationGasLimit?: number;
+  callGasLimit?: number;
 };

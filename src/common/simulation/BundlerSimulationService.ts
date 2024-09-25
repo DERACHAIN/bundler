@@ -99,12 +99,6 @@ export class BundlerSimulationService {
         rpcUrl: this.networkService.rpcUrl,
       });
     }
-
-    if (config.kakarotNetworks.includes(this.networkService.chainId)) {
-      this.gasEstimator = createKakarotGasEstimator({
-        rpcUrl: this.networkService.rpcUrl,
-      });
-    }
   }
 
   async estimateUserOperationGas(
