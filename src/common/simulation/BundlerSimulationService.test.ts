@@ -11,7 +11,15 @@ describe("BundlerSimulationService", () => {
     chainId: 137,
     rpcUrl: "https://random-rpc-url.com",
   });
-  const gasPriceService = {} as unknown as GasPriceService;
+  const gasPriceService = {
+    get1559GasPrice: jest.fn().mockResolvedValue({
+      maxFeePerGas: 10n,
+      maxPriorityFeePerGas: 10n,
+    }),
+
+    getBaseFeePerGas: jest.fn().mockResolvedValue(10n),
+
+  } as unknown as GasPriceService;
   const bundlerSimulationService = new BundlerSimulationService(
     networkService,
     gasPriceService,

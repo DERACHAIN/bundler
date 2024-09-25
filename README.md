@@ -51,6 +51,18 @@ the server should be up and running at `localhost:3000` without errors.
 $ docker-compose up -d
 ```
 
+## Unit test
+
+- Compile test
+```sh
+$ npx tsc
+```
+
+- Execute UTs
+```sh
+$ npm run test
+```
+
 ## Dry test
 
 - Test Bundler endpoint
