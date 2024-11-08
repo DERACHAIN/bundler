@@ -26,9 +26,9 @@ $ yarn
 $ cp .env-example .env
 ```
 
-- Create `./src/config.json` from `./src/config.template.json` and populate necessary secrets and credentials
+- Create `./src/config/config.json` from `./src/config/config.template.json` and populate necessary secrets and credentials
 ```sh
-$ cp ./src/config.template.json ./src/config.json
+$ cp ./src/config/config.template.json ./src/config/config.json
 ```
 
 - Compile `config.json` after exporting the `BUNDLER_CONFIG_PASSPHRASE` environment variable with the same value that is predefined in the `.env` file from the previous step
